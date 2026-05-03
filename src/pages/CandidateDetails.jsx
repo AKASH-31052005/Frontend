@@ -206,7 +206,7 @@ const CandidateDetails = () => {
                         </div>
 
                         {/* Action Buttons (Recruiter Only) */}
-                        {user?.role === 'RECRUITER' && candidate.status === 'APPLIED' && (
+                        {user?.role === 'HR' && candidate.status === 'APPLIED' && (
                             <div className="details-actions">
                                 <button
                                     className="btn btn-success"

@@ -41,5 +41,17 @@ export const candidateService = {
     getStats: async () => {
         const response = await api.get('/candidates/stats');
         return response.data;
+    },
+
+    // Upload resume file
+    uploadResume: async (file) => {
+        const formData = new FormData();
+        formData.append('resume', file);
+        const response = await api.post('/upload/resume', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data;
     }
 };

@@ -3,6 +3,7 @@ import { candidateService } from '../services/candidateService';
 import Header from '../components/Header';
 import StatsCard from '../components/StatsCard';
 import CandidateTable from '../components/CandidateTable';
+import toast from 'react-hot-toast';
 
 const HRDashboard = () => {
     const [candidates, setCandidates] = useState([]);
@@ -46,6 +47,28 @@ const HRDashboard = () => {
     useEffect(() => {
         fetchStats();
     }, []);
+
+    const handleShortlist = async (id) => {
+        try {
+            await candidateService.updateStatus(id, 'SHORTLISTED', 'Candidate shortlisted by HR');
+            toast.success('Candidate shortlisted successfully!');
+            fetchCandidates();
+            fetchStats();
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to shortlist candidate');
+        }
+    };
+
+    const handleReject = async (id) => {
+        try {
+            await candidateService.updateStatus(id, 'REJECTED', 'Candidate rejected by HR');
+            toast.success('Candidate rejected');
+            fetchCandidates();
+            fetchStats();
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to reject candidate');
+        }
+    };
 
     const handleSearch = (e) => {
         setSearchTerm(e.target.value);
@@ -134,8 +157,10 @@ const HRDashboard = () => {
 
                 <CandidateTable
                     candidates={candidates}
+                    onShortlist={handleShortlist}
+                    onReject={handleReject}
                     loading={loading}
-                    showActions={false}
+                    showActions={true}
                 />
 
                 {/* Pagination */}

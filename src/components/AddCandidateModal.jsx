@@ -12,6 +12,7 @@ const AddCandidateModal = ({ isOpen, onClose, onSuccess }) => {
         skills: '',
         resumeUrl: ''
     });
+    const [resumeFile, setResumeFile] = useState(null);
     const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
@@ -19,13 +20,26 @@ const AddCandidateModal = ({ isOpen, onClose, onSuccess }) => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
+    const handleFileChange = (e) => {
+        setResumeFile(e.target.files[0]);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
 
         try {
+            let uploadedUrl = formData.resumeUrl;
+
+            // Upload file first if selected
+            if (resumeFile) {
+                const uploadRes = await candidateService.uploadResume(resumeFile);
+                uploadedUrl = uploadRes.url;
+            }
+
             await candidateService.createCandidate({
                 ...formData,
+                resumeUrl: uploadedUrl,
                 experience: Number(formData.experience),
                 skills: formData.skills.split(',').map(s => s.trim()).filter(Boolean)
             });
@@ -40,6 +54,7 @@ const AddCandidateModal = ({ isOpen, onClose, onSuccess }) => {
                 skills: '',
                 resumeUrl: ''
             });
+            setResumeFile(null);
             onSuccess();
             onClose();
         } catch (error) {
@@ -141,14 +156,13 @@ const AddCandidateModal = ({ isOpen, onClose, onSuccess }) => {
                         </div>
 
                         <div className="form-group">
-                            <label className="form-label">Resume URL (optional)</label>
+                            <label className="form-label">Resume (PDF/Word, Optional)</label>
                             <input
-                                type="url"
-                                name="resumeUrl"
+                                type="file"
+                                name="resumeFile"
                                 className="form-input"
-                                value={formData.resumeUrl}
-                                onChange={handleChange}
-                                placeholder="https://example.com/resume.pdf"
+                                onChange={handleFileChange}
+                                accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                             />
                         </div>
                     </div>

@@ -97,7 +97,7 @@ const CandidateTable = ({
                                     >
                                         👁️
                                     </button>
-                                    {showActions && user?.role === 'RECRUITER' && (
+                                    {showActions && user?.role === 'HR' && (
                                         <>
                                             <button
                                                 className="btn-icon shortlist"

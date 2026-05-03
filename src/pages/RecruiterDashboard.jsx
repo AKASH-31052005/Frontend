@@ -51,27 +51,7 @@ const RecruiterDashboard = () => {
         fetchStats();
     }, []);
 
-    const handleShortlist = async (id) => {
-        try {
-            await candidateService.updateStatus(id, 'SHORTLISTED', 'Candidate shortlisted by recruiter');
-            toast.success('Candidate shortlisted successfully!');
-            fetchCandidates();
-            fetchStats();
-        } catch (error) {
-            toast.error(error.response?.data?.message || 'Failed to shortlist candidate');
-        }
-    };
 
-    const handleReject = async (id) => {
-        try {
-            await candidateService.updateStatus(id, 'REJECTED', 'Candidate rejected by recruiter');
-            toast.success('Candidate rejected');
-            fetchCandidates();
-            fetchStats();
-        } catch (error) {
-            toast.error(error.response?.data?.message || 'Failed to reject candidate');
-        }
-    };
 
     const handleSearch = (e) => {
         setSearchTerm(e.target.value);
@@ -147,10 +127,8 @@ const RecruiterDashboard = () => {
 
                 <CandidateTable
                     candidates={candidates}
-                    onShortlist={handleShortlist}
-                    onReject={handleReject}
                     loading={loading}
-                    showActions={true}
+                    showActions={false}
                 />
 
                 {/* Pagination */}
